@@ -1,70 +1,71 @@
-# Paso 1: Importar todas las librerías y herramientas que necesitamos
+#Paso 1: Importamos todas las librerias y herramientas que necesitamos
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash # Para contraseñas seguras
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 
-# Paso 2: Crear la aplicación Flask
+#Paso 2: Creamos la aplicación Flask
 app = Flask(__name__)
 
-# Paso 3: Configurar la aplicación
-# SECRET_KEY es necesaria para la seguridad de la sesión y los formularios (protección CSRF)
+#Paso 3: Configuramos la aplicación
+#SECRET_KEY es necesaria para la seguridad de la sesion y los formularios
 app.config['SECRET_KEY'] = 'alessandro12'
-# Esta es la ruta al archivo de nuestra base de datos SQLite
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-# Desactivamos una función de SQLAlchemy que no necesitamos para evitar 'warnings' en la consola
+
+#Hacemos conexion a base de datos usamos postgresql
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ghettoboy:alessandro12@localhost:5432/db1'
+#Desactivamos una función de SQLAlchemy que no necesitamos para evitar 'warnings' en la consola
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Paso 4: Inicializar las extensiones que usaremos
-# 'db' será nuestro objeto para interactuar con la base de datos
+#Paso 4: Inicializar las extensiones que usaremos
+#'db' será nuestro objeto para interactuar con la base de datos
 db = SQLAlchemy(app)
-# 'login_manager' manejará todo el proceso de inicio de sesión
+#'login_manager' manejara todo el proceso de inicio de sesion
 login_manager = LoginManager(app)
-# Si un usuario no logueado intenta ir a una página protegida, lo redirigirá a la función 'login'
+#Si un usuario no logueado intenta ir a una página protegida, lo redirigirá a la función 'login'
 login_manager.login_view = 'login'
 login_manager.login_message = 'Por favor, inicia sesión para acceder a esta página.'
 
-# Paso 5: Importar nuestros modelos y formularios
-# Se hace aquí para evitar un "error de importación circular", ya que los modelos necesitan el objeto 'db'
+#Paso 5: Importamos el archivo models y formularios
+#Se hace aquí para evitar un "error de importación circular", ya que los modelos necesitan el objeto 'db'
 from models import User
 from forms import LoginForm, RegistrationForm
 
-# Paso 6: Configurar el "cargador de usuarios" de Flask-Login
-# Esta función le dice a Flask-Login cómo encontrar un usuario específico por su ID
+#Paso 6: Configuramos el "cargador de usuarios" de Flask-Login
+#Esta función le dice a Flask-Login cómo encontrar un usuario específico por su ID
 @login_manager.user_loader
 def load_user(user_id):
     # User.query.get() es una función de SQLAlchemy que busca un usuario por su clave primaria (el ID)
     return User.query.get(int(user_id))
 
 
-#Aqui van las rutas
+#Aqui van todas las RUTAS (las "páginas" de nuestra app)
 
-# Ruta para la página raíz del sitio web
+#Ruta para la página raíz del sitio web
 @app.route('/')
 def index():
-    # Cuando alguien visita la raíz del sitio (ej: http://127.0.0.1:5000/), lo redirigimos a la página de login
+    #Aqui lo redirigimos a la pagina de login
     return redirect(url_for('login'))
 
-# Ruta para la página de "inicio" o "dashboard" después de iniciar sesión
+#Ruta para la página de "inicio" después de iniciar sesión
 @app.route('/inicio')
-@login_required # Este decorador protege la ruta. Solo se puede acceder si has iniciado sesión.
+@login_required #Este decorador protege la ruta. Solo se puede acceder si has iniciado sesión.
 def inicio():
-    # Renderizamos la plantilla HTML que ve un usuario ya logueado
+    #Renderizamos la plantilla HTML que ve un usuario ya logueado
     return render_template('protegida.html')
 
-# Ruta para la página de inicio de sesión
+#Ruta para la página de inicio de sesión
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # Si el usuario ya tiene una sesión activa, lo mandamos directamente al inicio
+    #Si el usuario ya tiene una sesión activa, lo mandamos directamente al inicio
     if current_user.is_authenticated:
         return redirect(url_for('inicio'))
 
-    form = LoginForm() # Creamos una instancia del formulario de login
+    form = LoginForm() #Creamos una instancia del formulario de login
     # Si el formulario fue enviado (POST) y todos los campos son válidos...
     if form.validate_on_submit():
         # Buscamos en la base de datos un usuario con el nombre que se introdujo
         user = User.query.filter_by(username=form.username.data).first()
-        # Si el usuario existe Y la contraseña introducida es correcta...
+        # Si el usuario existe y la contraseña es correcta...
         if user and check_password_hash(user.password_hash, form.password.data):
             login_user(user) # ...iniciamos su sesión con Flask-Login
             return redirect(url_for('inicio')) # y lo redirigimos a la página de inicio
@@ -102,3 +103,4 @@ def register():
 def logout():
     logout_user() # Cerramos la sesión del usuario con Flask-Login
     return redirect(url_for('login'))
+

@@ -1,4 +1,4 @@
-# Importamos las clases necesarias de las librerías
+# Importamos las clases necesarias de las librerias
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, EqualTo, ValidationError
@@ -6,10 +6,7 @@ from wtforms.validators import DataRequired, EqualTo, ValidationError
 from models import User
 
 class LoginForm(FlaskForm):
-    """
-    Define el formulario para que los usuarios inicien sesión.
-    Cada variable de clase representa un campo en el formulario.
-    """
+   
     # Campo para el nombre de usuario. Es un campo de texto (StringField).
     # 'Nombre de Usuario' es la etiqueta que se mostrará en el HTML.
     # 'validators=[DataRequired()]' significa que este campo no puede dejarse vacío.
@@ -23,9 +20,7 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    """
-    Define el formulario para que nuevos usuarios creen una cuenta.
-    """
+    
     # Campo para el nombre de usuario, igual que en el login.
     username = StringField('Nombre de Usuario', validators=[DataRequired()])
 
@@ -42,11 +37,7 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Registrar')
 
     def validate_username(self, username):
-        """
-        Esta es una función de validación personalizada. WTForms la ejecuta
-        automáticamente sobre el campo 'username' porque la función se llama
-        'validate_<nombre_del_campo>'.
-        """
+        
         # Se busca en la base de datos si ya existe un usuario con el nombre que se está intentando registrar.
         user = User.query.filter_by(username=username.data).first()
         # Si la consulta encuentra un usuario (es decir, 'user' no es None)...

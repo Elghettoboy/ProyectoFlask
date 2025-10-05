@@ -16,11 +16,10 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
 
     # password_hash: Guardará la contraseña de forma segura (hasheada).
-    # Nunca guardamos la contraseña real directamente. No puede estar vacía.
-    password_hash = db.Column(db.String(128), nullable=False)
+    # NUNCA guardamos la contraseña real directamente. No puede estar vacía.
+    password_hash = db.Column(db.String(256), nullable=False)
 
     def __repr__(self):
         # Esta es una función opcional que ayuda al depurar.
         # Nos muestra el nombre de usuario cuando imprimimos un objeto User.
         return f'<User {self.username}>'
-

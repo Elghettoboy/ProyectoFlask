@@ -1,27 +1,41 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="es">
 <head>
-    <title> Inicio de Sesion</title>
+    <meta charset="UTF-8">
+    <title>Inicio de Sesión</title>
 </head>
-
 <body>
     <h1>Iniciar Sesión</h1>
-    <form method="POST" novalidate>
+
+    <!-- Bloque para mostrar mensajes 'flash' (como "Error: Usuario incorrecto") -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li style="color: red;">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Formulario de inicio de sesión -->
+    <form method="POST" action="" novalidate>
         {{ form.hidden_tag() }}
-        <p>{{ form.username.label }}<br>{{ form.username(size=32) }}</p>
-        <p>{{ form.password.label }}<br>{{ form.password(size=32) }}</p>
+        <p>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+        </p>
         <p>{{ form.submit() }}</p>
     </form>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-</body>
 
+    <hr>
+
+    <!-- AÑADE ESTA LÍNEA: Enlace a la página de registro -->
+    <p>¿No tienes una cuenta? <a href="{{ url_for('register') }}">Regístrate aquí</a></p>
+
+</body>
 </html>

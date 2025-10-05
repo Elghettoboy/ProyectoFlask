@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Usuario</title>
+</head>
+<body>
+    <h1>Crear una nueva cuenta</h1>
+
+    <!-- Bloque para mostrar mensajes 'flash' (como "¡Cuenta creada con éxito!") -->
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <!-- El formulario. 'novalidate' desactiva la validación del navegador para usar la de WTForms. -->
+    <form method="POST" action="" novalidate>
+        <!-- 'hidden_tag()' es crucial para la protección CSRF. ¡Nunca lo olvides! -->
+        {{ form.hidden_tag() }}
+
+        <p>
+            <!-- Renderiza la etiqueta del campo (ej: "Nombre de Usuario") -->
+            {{ form.username.label }}<br>
+            <!-- Renderiza el campo de texto <input> -->
+            {{ form.username(size=32) }}
+            <!-- Bucle para mostrar cualquier error de validación para este campo -->
+            {% for error in form.username.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}
+            {% for error in form.password.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password2.label }}<br>
+            {{ form.password2(size=32) }}
+            {% for error in form.password2.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            <!-- Renderiza el botón de envío <input type="submit"> -->
+            {{ form.submit() }}
+        </p>
+    </form>
+    <!-- Enlace para que los usuarios puedan volver a la página de inicio de sesión -->
+    <p>¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión aquí</a>.</p>
+</body>
+</html>
+

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Proteccion </title>
+</head>
+
+<body>
+    <h1>¡Página Súper Secreta!</h1>
+    <p>Hola, {{ current_user.username }}! Solo los usuarios autenticados pueden ver esto.</p>
+    <p><a href="{{ url_for('logout') }}">Cerrar Sesión</a></p>
+</body>
+
+</html>

@@ -104,3 +104,13 @@ def logout():
     logout_user() #cerramos la sesión del usuario con Flask-Login
     return redirect(url_for('login'))
 
+#ruta para mostrar mi perfil
+@app.route('/miperfil')
+@login_required
+def miperfil():
+    return render_template('miperfil.html')
+
+@app.route('/protegida')
+@login_required
+def protegida():
+    return render_template('protegida.html')
